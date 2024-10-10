@@ -173,9 +173,10 @@ sCompare cSyncFolder::compareFolder(sFolder* _folder_src, sFolder* _folder_dst)
 
                     _compare.listFileModify.push_back(_folder_src->listFile.at(i_src));
 
-                } else if (_fileInfoSrc.lastModified().toSecsSinceEpoch() != _fileInfoDst.lastModified().toSecsSinceEpoch()) {
+                } else if (_fileInfoSrc.lastModified().toSecsSinceEpoch() < (_fileInfoDst.lastModified().toSecsSinceEpoch() - 2)
+                           or _fileInfoSrc.lastModified().toSecsSinceEpoch() > (_fileInfoDst.lastModified().toSecsSinceEpoch() + 2)) {
 
-                    qDebug() << _fileInfoSrc.lastModified() << _fileInfoDst.lastModified();
+                    //qDebug() << _fileInfoSrc.lastModified() << _fileInfoDst.lastModified();
 
                     if (c_globalVar.is_video_file(_fileInfoSrc.suffix()))
                         _compare.listFileEqual.push_back(_folder_src->listFile.at(i_src));

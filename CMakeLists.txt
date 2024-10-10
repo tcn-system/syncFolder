@@ -9,6 +9,10 @@ set(_PROJET_NAME_TARGET "")
 string(CONCAT _PROJET_NAME_TARGET ${_PROJET_NAME} "_" ${_PROJET_VERSION})
 message(${_PROJET_NAME_TARGET})
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    message("compile on windows")
+endif()
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -47,6 +51,11 @@ add_compile_definitions(  cMake_qtVersion="${QT_VERSION}" )
 add_compile_definitions(  cMake_projectName="${_PROJET_NAME}" )
 add_compile_definitions(  cMake_projectVersion="${_PROJET_VERSION}" )
 # ----
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set_target_properties( ${_PROJET_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
+    set_target_properties( ${_PROJET_NAME} PROPERTIES WIN64_EXECUTABLE TRUE)
+endif()
 
 install(TARGETS ${_PROJET_NAME}
     BUNDLE DESTINATION .

@@ -9,6 +9,14 @@
 #include "mainwindow.h"
 #include "tcnStyle.h"
 
+#ifdef _WIN32
+#include <iostream>
+#include <windows.h>
+#include <psapi.h>
+
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 void create_cqtdeploy_file();
 
 int main(int argc, char* argv[])
@@ -19,7 +27,7 @@ int main(int argc, char* argv[])
 
     create_cqtdeploy_file();
 
-    c_tcnStyle = new cTcnStyle(&app, e_profile_choose_dark);
+    c_tcnStyle = new cTcnStyle(&app, e_profile_choose_standard);
     c_tcnStyle->load_tcnStyle();
 
     cMainWindow w;
@@ -40,6 +48,7 @@ int main(int argc, char* argv[])
 void create_cqtdeploy_file()
 {
 
+#ifndef _WIN32
     QString filename_desktop = cMake_binaryPath + QString("/") + cMake_projectName + QString(".desktop");
     QFile file_desktop(filename_desktop);
 
@@ -125,4 +134,40 @@ void create_cqtdeploy_file()
 
         file_deploy.close();
     }
+
+#else
+
+    // #! /bin/sh.
+
+    QString filename_deploy = cMake_binaryPath + QString("/cqtDeploy.bat");
+    QFile file_deploy(filename_deploy);
+
+    if (file_deploy.exists())
+        file_deploy.remove();
+
+    if (file_deploy.open(QIODevice::ReadWrite)) {
+
+        // "C:/Program Files/CQtDeployer/1.6/CQtDeployer.exe" -bin manageModBus.exe -qmake C:/Qt/6.7.1/mingw_64/bin/qmake.exe
+
+        QTextStream stream(&file_deploy);
+        stream << "\n";
+
+        stream << QChar('"') << "C:/Program Files/CQtDeployer/1.6/CQtDeployer.exe" << QChar('"')
+               << " -bin "
+               << cMake_projectName << ".exe"
+               << " -qmake "
+               << cMake_qtLibPath
+               << "/bin/qmake.exe"
+               << "\n";
+
+        stream << "\n";
+        stream << "pause\n";
+        stream << "\n";
+
+//        file_deploy.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+
+        file_deploy.close();
+    }
+
+#endif
 }

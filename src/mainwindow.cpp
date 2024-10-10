@@ -262,8 +262,7 @@ void cMainWindow::p_selectPathSrcSlot()
     QString _srcPath = QFileDialog::getExistingDirectory(
         this,
         tr("Select Src Directory"),
-        "/home/tcousin/Bureau/Compare");
-    //        QDir::currentPath());
+        QDir::currentPath());
 
     qle_pathSrc->setText(_srcPath);
 
@@ -355,8 +354,7 @@ void cMainWindow::p_selectPathDstSlot()
     QString _dstPath = QFileDialog::getExistingDirectory(
         this,
         tr("Select Dst Directory"),
-        "/home/tcousin/Bureau/Compare");
-    //        QDir::currentPath());
+        QDir::currentPath());
 
     qle_pathDst->setText(_dstPath);
 
