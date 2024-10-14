@@ -1,6 +1,7 @@
-# tcn 
+# tcn-system
 
 /0_build/
+/0_Build/
 
 # C++ objects and libs
 *.slo
