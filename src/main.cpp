@@ -22,7 +22,6 @@ void create_cqtdeploy_file();
 int main(int argc, char* argv[])
 {
     // cqtdeployer -bin syncFolder -qmake ~/Qt/5.15.2/gcc_64/bin/qmake
-    // git
 
     QApplication app(argc, argv);
 
