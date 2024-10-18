@@ -17,6 +17,9 @@ cMainThread::cMainThread(QWidget* parent)
     e_typeAction = e_action_null;
 
     m_fileCopyier = new cThreadProcess;
+    m_fileCopyier->setMinimumWidth(600);
+    m_fileCopyier->setWindowTitle(cMake_projectName + QString(" page::fileCopyier ") + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
+
     connect(m_fileCopyier, &cThreadProcess::p_emitFinished, this, &cMainThread::p_receptFinished);
 }
 
@@ -117,6 +120,9 @@ void cMainThread::updateTimer_Copy()
             dstFilePath.replace(c_globalVar.s_compare.folder_src_dir, c_globalVar.s_compare.folder_dst_dir);
 
             m_fileCopyier->p_copy(dstFileName, c_globalVar.s_compare.listFileCopy.at(c_globalVar.idxFile).path_full, dstFilePath);
+            m_fileCopyier->setWindowTitle(cMake_projectName
+                                          + QString(" page::fileCopyier::copy ( ") + QString::number(c_globalVar.idxFile) + " / " + QString::number(c_globalVar.s_compare.listFileCopy.size()) + QString(" ) ")
+                                          + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
             m_fileCopyier->adjustSize();
 
             // if (m_fileCopyier->isActiveWindow())
@@ -154,6 +160,9 @@ void cMainThread::updateTimer_Modify()
             dstFilePath.replace(c_globalVar.s_compare.folder_src_dir, c_globalVar.s_compare.folder_dst_dir);
 
             m_fileCopyier->p_copy(dstFileName, c_globalVar.s_compare.listFileModify.at(c_globalVar.idxFile).path_full, dstFilePath);
+            m_fileCopyier->setWindowTitle(cMake_projectName
+                                          + QString(" page::fileCopyier::modify ( ") + QString::number(c_globalVar.idxFile) + " / " + QString::number(c_globalVar.s_compare.listFileModify.size()) + QString(" ) ")
+                                          + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
             m_fileCopyier->adjustSize();
 
             statMachine = 1;
@@ -188,6 +197,9 @@ void cMainThread::updateTimer_Delete()
             dstFilePath.replace(c_globalVar.s_compare.folder_src_dir, c_globalVar.s_compare.folder_dst_dir);
 
             m_fileCopyier->p_delete(dstFileName, c_globalVar.s_compare.listFileDelete.at(c_globalVar.idxFile).path_full, dstFilePath);
+            m_fileCopyier->setWindowTitle(cMake_projectName
+                                          + QString(" page::fileCopyier::delete ( ") + QString::number(c_globalVar.idxFile) + " / " + QString::number(c_globalVar.s_compare.listFileDelete.size()) + QString(" ) ")
+                                          + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
             m_fileCopyier->adjustSize();
 
             statMachine = 1;
