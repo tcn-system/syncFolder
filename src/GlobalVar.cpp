@@ -107,18 +107,17 @@ bool cGlobalVar::read_Ini_File()
     return false;
 }
 
-
-qint64 cGlobalVar::get_storage_space_free(QString _path, QString &error)
+qint64 cGlobalVar::get_storage_space_free(QString _path, QString& error)
 {
     error = QString();
 
     QStorageInfo storage(_path);
 
-    // qDebug() << "export root path: " <<storage.rootPath();
-    // qDebug() << "volume name:" << storage.name();
-    // qDebug() << "fileSystemType:" << storage.fileSystemType();
-    // qDebug() << "size:" << storage.bytesTotal() / 1000 / 1000 << "MB";
-    // qDebug() << "availableSize:" << storage.bytesAvailable() / 1000 / 1000 << "MB";
+    qDebug() << "export root path: " << storage.rootPath();
+    qDebug() << "volume name:" << storage.name();
+    qDebug() << "fileSystemType:" << storage.fileSystemType();
+    qDebug() << "size:" << storage.bytesTotal() / 1000 / 1000 << "MB";
+    qDebug() << "availableSize:" << storage.bytesAvailable() / 1000 / 1000 << "MB";
 
     if (storage.isValid() && storage.isReady()) {
 
@@ -135,13 +134,13 @@ qint64 cGlobalVar::get_storage_space_free(QString _path, QString &error)
 
     } else {
 
-        error = "Selected drive validity: "+ QString::number(storage.isValid()) + "or storage availability: " +QString::number(storage.isReady());
+        error = "Selected drive validity: " + QString::number(storage.isValid()) + "or storage availability: " + QString::number(storage.isReady());
 
         return -1;
     }
 }
 
-qint64 cGlobalVar::verif_storage_space_free(QString _path , qint64 sizeFile , QString &error)
+qint64 cGlobalVar::verif_storage_space_free(QString _path, qint64 sizeFile, QString& error)
 {
     error = QString();
 
@@ -161,7 +160,7 @@ qint64 cGlobalVar::verif_storage_space_free(QString _path , qint64 sizeFile , QS
 
             float MBavailable = storage.bytesAvailable() / 1024 / 1024;
 
-            if(storage.bytesAvailable() > sizeFile) {
+            if (storage.bytesAvailable() > sizeFile) {
 
                 return storage.bytesAvailable();
 
@@ -180,7 +179,7 @@ qint64 cGlobalVar::verif_storage_space_free(QString _path , qint64 sizeFile , QS
 
     } else {
 
-        error = "Selected drive validity: "+ QString::number(storage.isValid()) + "or storage availability: " +QString::number(storage.isReady());
+        error = "Selected drive validity: " + QString::number(storage.isValid()) + "or storage availability: " + QString::number(storage.isReady());
 
         return -1;
     }
