@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 
+
+#include <QMessageBox>
+
 cMainWindow::cMainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
@@ -272,22 +275,34 @@ void cMainWindow::loadSrcList(QString _srcPath)
 {
     if (_srcPath.size() > 0) {
 
-        setEnable_Src(false);
+        QString _error;
+        qint64 _freeSize = c_globalVar.get_storage_space_free(_srcPath,_error);
 
-        waitSrcRead = new cWaitWindows(listSrc);
-        waitSrcRead->show();
+        c_globalVar.s_folderSrc.folder_free_space_size = _freeSize;
 
-        cReadFolder* readFolder = new cReadFolder;
-        connect(readFolder, &cReadFolder::finished, this, &cMainWindow::p_readSrcFolderFinishSlot);
-        readFolder->setPath(_srcPath , c_globalVar.b_src_exept_folders , c_globalVar.b_src_exept_files);
-        readFolder->setFolder(&c_globalVar.s_folderSrc);
-        readFolder->start();
+        if(_freeSize > (1024 * 1024 * 1024)) // 1 Giga octets
+        {
+            setEnable_Src(false);
 
-        //        cThread* _thread = new cThread(this);
-        //        connect(_thread, &cThread::signal_cthread_finished, this, &cMainWindow::p_readSrcFolderFinishSlot);
-        //        _thread->setPath(_srcPath);
-        //        _thread->setFolder(&c_globalVar.s_folderSrc);
-        //        _thread->p_begin();
+            waitSrcRead = new cWaitWindows(listSrc);
+            waitSrcRead->show();
+
+            cReadFolder* readFolder = new cReadFolder;
+            connect(readFolder, &cReadFolder::finished, this, &cMainWindow::p_readSrcFolderFinishSlot);
+            readFolder->setPath(_srcPath , c_globalVar.b_src_exept_folders , c_globalVar.b_src_exept_files);
+            readFolder->setFolder(&c_globalVar.s_folderSrc);
+            readFolder->start();
+
+            //        cThread* _thread = new cThread(this);
+            //        connect(_thread, &cThread::signal_cthread_finished, this, &cMainWindow::p_readSrcFolderFinishSlot);
+            //        _thread->setPath(_srcPath);
+            //        _thread->setFolder(&c_globalVar.s_folderSrc);
+            //        _thread->p_begin();
+        }
+        else
+        {
+            QMessageBox( QMessageBox::Information, "Error free space size", _error, QMessageBox::Ok).exec();
+        }
     }
 }
 void cMainWindow::p_readSrcFolderFinishSlot()
@@ -364,16 +379,31 @@ void cMainWindow::loadDstList(QString _dstPath)
 {
     if (_dstPath.size() > 0) {
 
-        setEnable_Dst(false);
+        QString _error;
+        qint64 _freeSize = c_globalVar.get_storage_space_free(_dstPath,_error);
 
-        waitDstRead = new cWaitWindows(listDst);
-        waitDstRead->show();
+        c_globalVar.s_folderDst.folder_free_space_size = _freeSize;
 
-        cReadFolder* readFolder = new cReadFolder;
-        connect(readFolder, &cReadFolder::finished, this, &cMainWindow::p_readDstFolderFinishSlot);
-        readFolder->setPath(_dstPath, c_globalVar.b_dst_exept_folders , c_globalVar.b_dst_exept_files);
-        readFolder->setFolder(&c_globalVar.s_folderDst);
-        readFolder->start();
+        if(_freeSize > (1024 * 1024 * 1024)) // 1 Giga octets
+        {
+            QString _error;
+            c_globalVar.get_storage_space_free(_dstPath,_error);
+
+            setEnable_Dst(false);
+
+            waitDstRead = new cWaitWindows(listDst);
+            waitDstRead->show();
+
+            cReadFolder* readFolder = new cReadFolder;
+            connect(readFolder, &cReadFolder::finished, this, &cMainWindow::p_readDstFolderFinishSlot);
+            readFolder->setPath(_dstPath, c_globalVar.b_dst_exept_folders , c_globalVar.b_dst_exept_files);
+            readFolder->setFolder(&c_globalVar.s_folderDst);
+            readFolder->start();
+        }
+        else
+        {
+            QMessageBox( QMessageBox::Information, "Error free space size", _error, QMessageBox::Ok).exec();
+        }
     }
 }
 void cMainWindow::p_readDstFolderFinishSlot()

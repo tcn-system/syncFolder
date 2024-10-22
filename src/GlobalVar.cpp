@@ -2,6 +2,8 @@
 
 #include "Define.h"
 
+#include <QStorageInfo>
+
 cGlobalVar::cGlobalVar()
 {
     fileManager = new cFileManager(QDir::homePath() + _D_PROJET_PATH_FILE);
@@ -103,6 +105,85 @@ bool cGlobalVar::read_Ini_File()
         return true;
     }
     return false;
+}
+
+
+qint64 cGlobalVar::get_storage_space_free(QString _path, QString &error)
+{
+    error = QString();
+
+    QStorageInfo storage(_path);
+
+    // qDebug() << "export root path: " <<storage.rootPath();
+    // qDebug() << "volume name:" << storage.name();
+    // qDebug() << "fileSystemType:" << storage.fileSystemType();
+    // qDebug() << "size:" << storage.bytesTotal() / 1000 / 1000 << "MB";
+    // qDebug() << "availableSize:" << storage.bytesAvailable() / 1000 / 1000 << "MB";
+
+    if (storage.isValid() && storage.isReady()) {
+
+        if (!storage.isReadOnly()) {
+
+            return storage.bytesAvailable();
+
+        } else {
+
+            error = "No permission to write to current folder ";
+
+            return -2;
+        }
+
+    } else {
+
+        error = "Selected drive validity: "+ QString::number(storage.isValid()) + "or storage availability: " +QString::number(storage.isReady());
+
+        return -1;
+    }
+}
+
+qint64 cGlobalVar::verif_storage_space_free(QString _path , qint64 sizeFile , QString &error)
+{
+    error = QString();
+
+    QFileInfo _finf(_path);
+
+    QStorageInfo storage(_finf.absoluteDir().path());
+
+    // qDebug() << "export root path: " <<storage.rootPath();
+    // qDebug() << "volume name:" << storage.name();
+    // qDebug() << "fileSystemType:" << storage.fileSystemType();
+    // qDebug() << "size:" << storage.bytesTotal() / 1000 / 1000 << "MB";
+    // qDebug() << "availableSize:" << storage.bytesAvailable() / 1000 / 1000 << "MB";
+
+    if (storage.isValid() && storage.isReady()) {
+
+        if (!storage.isReadOnly()) {
+
+            float MBavailable = storage.bytesAvailable() / 1024 / 1024;
+
+            if(storage.bytesAvailable() > sizeFile) {
+
+                return storage.bytesAvailable();
+
+            } else {
+
+                error = "Not enough disk space, available disk space is only : " + QString::number(MBavailable);
+                return -3;
+            }
+
+        } else {
+
+            error = "No permission to write to current folder ";
+
+            return -2;
+        }
+
+    } else {
+
+        error = "Selected drive validity: "+ QString::number(storage.isValid()) + "or storage availability: " +QString::number(storage.isReady());
+
+        return -1;
+    }
 }
 
 cGlobalVar c_globalVar;

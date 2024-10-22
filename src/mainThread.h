@@ -60,6 +60,8 @@ private:
 
     void connect_timer();
     void disconnect_timer();
+
+    QString _error_free_space;
 };
 
 #endif // MAINTHREAD_H_

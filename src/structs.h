@@ -63,6 +63,7 @@ struct sDirInfo {
 struct sFolder {
 
     QString folder_dir;
+    qint64 folder_free_space_size;
 
     QList<sDirInfo> listDir;
     QList<sFileInfo> listFile;
@@ -74,6 +75,7 @@ struct sFolder {
     void init()
     {
         folder_dir = "";
+        folder_free_space_size = -1;
 
         listDir.clear();
         listFile.clear();

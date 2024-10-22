@@ -119,19 +119,33 @@ void cMainThread::updateTimer_Copy()
             QString dstFilePath = c_globalVar.s_compare.listFileCopy.at(c_globalVar.idxFile).path_full;
             dstFilePath.replace(c_globalVar.s_compare.folder_src_dir, c_globalVar.s_compare.folder_dst_dir);
 
-            m_fileCopyier->p_copy(dstFileName, c_globalVar.s_compare.listFileCopy.at(c_globalVar.idxFile).path_full, dstFilePath);
-            m_fileCopyier->setWindowTitle(cMake_projectName
-                                          + QString(" page::fileCopyier::copy ( ") + QString::number(c_globalVar.idxFile) + " / " + QString::number(c_globalVar.s_compare.listFileCopy.size()) + QString(" ) ")
-                                          + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
-            m_fileCopyier->adjustSize();
+            QFile _file(c_globalVar.s_compare.listFileCopy.at(c_globalVar.idxFile).path_full);
+            qint64 _freeSize = c_globalVar.verif_storage_space_free(dstFilePath , _file.size() , _error_free_space);
 
-            // if (m_fileCopyier->isActiveWindow())
-            //     m_fileCopyier->show();
+            qDebug() << "_freeSize" << _freeSize;
 
-            statMachine = 1;
+            if(_freeSize > 0)
+            {
+                c_globalVar.s_folderDst.folder_free_space_size = _freeSize;
+
+                m_fileCopyier->p_copy(dstFileName, c_globalVar.s_compare.listFileCopy.at(c_globalVar.idxFile).path_full, dstFilePath);
+                m_fileCopyier->setWindowTitle(cMake_projectName
+                                              + QString(" page::fileCopyier::copy ( ") + QString::number(c_globalVar.idxFile) + " / " + QString::number(c_globalVar.s_compare.listFileCopy.size()) + QString(" ) ")
+                                              + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
+                m_fileCopyier->adjustSize();
+
+                statMachine = 1;
+
+            } else {
+
+                stopMainThread();
+                Q_EMIT p_copyFinishedSignal();
+                return;
+            }
+
         } else {
-            stopMainThread();
 
+            stopMainThread();
             Q_EMIT p_copyFinishedSignal();
             return;
         }
@@ -159,16 +173,33 @@ void cMainThread::updateTimer_Modify()
             QString dstFilePath = c_globalVar.s_compare.listFileModify.at(c_globalVar.idxFile).path_full;
             dstFilePath.replace(c_globalVar.s_compare.folder_src_dir, c_globalVar.s_compare.folder_dst_dir);
 
-            m_fileCopyier->p_copy(dstFileName, c_globalVar.s_compare.listFileModify.at(c_globalVar.idxFile).path_full, dstFilePath);
-            m_fileCopyier->setWindowTitle(cMake_projectName
-                                          + QString(" page::fileCopyier::modify ( ") + QString::number(c_globalVar.idxFile) + " / " + QString::number(c_globalVar.s_compare.listFileModify.size()) + QString(" ) ")
-                                          + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
-            m_fileCopyier->adjustSize();
+            QFile _file(c_globalVar.s_compare.listFileModify.at(c_globalVar.idxFile).path_full);
+            qint64 _freeSize = c_globalVar.verif_storage_space_free(dstFilePath , _file.size() , _error_free_space);
 
-            statMachine = 1;
+            qDebug() << "_freeSize" << _freeSize;
+
+            if(_freeSize > 0)
+            {
+                c_globalVar.s_folderDst.folder_free_space_size = _freeSize;
+
+                m_fileCopyier->p_copy(dstFileName, c_globalVar.s_compare.listFileModify.at(c_globalVar.idxFile).path_full, dstFilePath);
+                m_fileCopyier->setWindowTitle(cMake_projectName
+                                              + QString(" page::fileCopyier::modify ( ") + QString::number(c_globalVar.idxFile) + " / " + QString::number(c_globalVar.s_compare.listFileModify.size()) + QString(" ) ")
+                                              + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
+                m_fileCopyier->adjustSize();
+
+                statMachine = 1;
+
+            } else {
+
+                stopMainThread();
+                Q_EMIT p_copyFinishedSignal();
+                return;
+            }
+
         } else {
-            stopMainThread();
 
+            stopMainThread();
             Q_EMIT p_copyFinishedSignal();
             return;
         }
@@ -204,8 +235,8 @@ void cMainThread::updateTimer_Delete()
 
             statMachine = 1;
         } else {
-            stopMainThread();
 
+            stopMainThread();
             Q_EMIT p_copyFinishedSignal();
             return;
         }
