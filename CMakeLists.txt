@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 set(_PROJET_NAME syncFolder)
-set(_PROJET_VERSION v5.7)
+set(_PROJET_VERSION v6.0.0)
 
 project(${_PROJET_NAME} VERSION 0.1 LANGUAGES CXX)
 

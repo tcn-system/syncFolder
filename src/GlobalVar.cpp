@@ -107,11 +107,11 @@ bool cGlobalVar::read_Ini_File()
     return false;
 }
 
-qint64 cGlobalVar::get_storage_space_free(QString _path, QString& error)
+qint64 cGlobalVar::get_storage_space_free(QString _dirPath, QString &error)
 {
     error = QString();
 
-    QStorageInfo storage(_path);
+    QStorageInfo storage((QDir(_dirPath)));
 
     qDebug() << "export root path: " << storage.rootPath();
     qDebug() << "volume name:" << storage.name();
@@ -140,13 +140,13 @@ qint64 cGlobalVar::get_storage_space_free(QString _path, QString& error)
     }
 }
 
-qint64 cGlobalVar::verif_storage_space_free(QString _path, qint64 sizeFile, QString& error)
+qint64 cGlobalVar::verif_storage_space_free(QString _dirPath , qint64 sizeFile , QString &error)
 {
     error = QString();
 
-    QFileInfo _finf(_path);
+    QStorageInfo storage((QDir(_dirPath)));
 
-    QStorageInfo storage(_finf.absoluteDir().path());
+    // qDebug() << "verif_storage_space_free" << _dirPath;
 
     // qDebug() << "export root path: " <<storage.rootPath();
     // qDebug() << "volume name:" << storage.name();
@@ -167,20 +167,21 @@ qint64 cGlobalVar::verif_storage_space_free(QString _path, qint64 sizeFile, QStr
             } else {
 
                 error = "Not enough disk space, available disk space is only : " + QString::number(MBavailable);
+                qDebug() << "Not enough disk space, available disk space is only : " << QString::number(MBavailable);
                 return -3;
             }
 
         } else {
 
             error = "No permission to write to current folder ";
-
+            qDebug() << "No permission to write to current folder ";
             return -2;
         }
 
     } else {
 
-        error = "Selected drive validity: " + QString::number(storage.isValid()) + "or storage availability: " + QString::number(storage.isReady());
-
+        error = "Selected drive validity: "+ QString::number(storage.isValid()) + "or storage availability: " +QString::number(storage.isReady());
+        qDebug() << "Selected drive validity: " << QString::number(storage.isValid()) << "or storage availability: " << QString::number(storage.isReady());
         return -1;
     }
 }
