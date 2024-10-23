@@ -43,8 +43,8 @@ public:
     void save_Ini_File();
     bool read_Ini_File();
 
-    qint64 get_storage_space_free(QString _path, QString &error);
-    qint64 verif_storage_space_free(QString _path, qint64 sizeFile, QString &error);
+    qint64 get_storage_space_free(QString _dirPath, QString &error);
+    qint64 verif_storage_space_free(QString _dirPath, qint64 sizeFile, QString &error);
 
 private:
 };

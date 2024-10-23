@@ -120,9 +120,7 @@ void cMainThread::updateTimer_Copy()
             dstFilePath.replace(c_globalVar.s_compare.folder_src_dir, c_globalVar.s_compare.folder_dst_dir);
 
             QFile _file(c_globalVar.s_compare.listFileCopy.at(c_globalVar.idxFile).path_full);
-            qint64 _freeSize = c_globalVar.verif_storage_space_free(dstFilePath , _file.size() , _error_free_space);
-
-            qDebug() << "_freeSize" << _freeSize;
+            qint64 _freeSize = c_globalVar.verif_storage_space_free(c_globalVar.s_compare.folder_dst_dir , _file.size() , _error_free_space);
 
             if(_freeSize > 0)
             {
@@ -174,9 +172,7 @@ void cMainThread::updateTimer_Modify()
             dstFilePath.replace(c_globalVar.s_compare.folder_src_dir, c_globalVar.s_compare.folder_dst_dir);
 
             QFile _file(c_globalVar.s_compare.listFileModify.at(c_globalVar.idxFile).path_full);
-            qint64 _freeSize = c_globalVar.verif_storage_space_free(dstFilePath , _file.size() , _error_free_space);
-
-            qDebug() << "_freeSize" << _freeSize;
+            qint64 _freeSize = c_globalVar.verif_storage_space_free(c_globalVar.s_compare.folder_dst_dir , _file.size() , _error_free_space);
 
             if(_freeSize > 0)
             {
