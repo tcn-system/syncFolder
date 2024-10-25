@@ -11,8 +11,8 @@
 
 #ifdef _WIN32
 #include <iostream>
-#include <windows.h>
 #include <psapi.h>
+#include <windows.h>
 
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
@@ -35,11 +35,10 @@ int main(int argc, char* argv[])
     w.setWindowTitle(cMake_projectName + QString(" ") + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
     w.setWindowIcon(QIcon(_D_ICON_PATH));
 
-    float resize_w = 0.80;
-    float resize_h = 0.80;
+    float resize = 1.0;
 
     QRect size1 = QGuiApplication::primaryScreen()->geometry();
-    w.resize(size1.width() * resize_w, size1.height() * resize_h);
+    w.resize(size1.width() * resize, size1.height() * resize);
 
     w.show();
     return app.exec();
@@ -164,7 +163,7 @@ void create_cqtdeploy_file()
         stream << "pause\n";
         stream << "\n";
 
-//        file_deploy.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+        //        file_deploy.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
 
         file_deploy.close();
     }

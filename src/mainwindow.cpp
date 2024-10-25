@@ -1,11 +1,36 @@
 #include "mainwindow.h"
 
-
 #include <QMessageBox>
 
 cMainWindow::cMainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
+    qs_splitter = new QSplitter(Qt::Orientation::Horizontal);
+
+    QGridLayout* qsl_layout = new QGridLayout;
+    {
+        cStringListWdgt* stringList_exeptDir = new cStringListWdgt(&c_globalVar._exeptDir, "_exeptDir");
+        connect(stringList_exeptDir, &cStringListWdgt::SIGNAL_save, this, &cMainWindow::p_saveQstringListSlot);
+        qsl_layout->addWidget(stringList_exeptDir, 0, 0);
+
+        cStringListWdgt* stringList_exeptFile = new cStringListWdgt(&c_globalVar._exeptFile, "_exeptFile");
+        connect(stringList_exeptFile, &cStringListWdgt::SIGNAL_save, this, &cMainWindow::p_saveQstringListSlot);
+        qsl_layout->addWidget(stringList_exeptFile, 0, 1);
+
+        cStringListWdgt* stringList_videoFile_ext = new cStringListWdgt(&c_globalVar._videoFile_ext, "_videoFile_ext");
+        connect(stringList_videoFile_ext, &cStringListWdgt::SIGNAL_save, this, &cMainWindow::p_saveQstringListSlot);
+        qsl_layout->addWidget(stringList_videoFile_ext, 1, 0);
+
+        cStringListWdgt* stringList_cppFile_ext = new cStringListWdgt(&c_globalVar._cppFile_ext, "_cppFile_ext");
+        connect(stringList_cppFile_ext, &cStringListWdgt::SIGNAL_save, this, &cMainWindow::p_saveQstringListSlot);
+        qsl_layout->addWidget(stringList_cppFile_ext, 1, 1);
+    }
+
+    QWidget* qsl_widget = new QWidget();
+    qsl_widget->setLayout(qsl_layout);
+
+    qs_splitter->addWidget(qsl_widget);
+
     QVBoxLayout* main_layout = new QVBoxLayout;
     {
         QHBoxLayout* group_layout = new QHBoxLayout;
@@ -34,18 +59,18 @@ cMainWindow::cMainWindow(QWidget* parent)
                     {
                         qcb_src_exeptFolders = new QCheckBox("exept folders");
                         qcb_src_exeptFolders->setChecked(c_globalVar.b_src_exept_folders);
-                        connect(qcb_src_exeptFolders, SIGNAL(clicked(bool)), this , SLOT(p_src_check_exept_folders_Slot(bool)) );
+                        connect(qcb_src_exeptFolders, SIGNAL(clicked(bool)), this, SLOT(p_src_check_exept_folders_Slot(bool)));
 
                         qsb_nbre_src_folders = new QSpinBox;
-                        qsb_nbre_src_folders->setRange(0 , 9999999);
+                        qsb_nbre_src_folders->setRange(0, 9999999);
                         qsb_nbre_src_folders->setReadOnly(true);
 
                         qcb_src_exeptFiles = new QCheckBox("exept files");
                         qcb_src_exeptFiles->setChecked(c_globalVar.b_src_exept_files);
-                        connect(qcb_src_exeptFiles, SIGNAL(clicked(bool)), this , SLOT(p_src_check_exept_files_Slot(bool)) );
+                        connect(qcb_src_exeptFiles, SIGNAL(clicked(bool)), this, SLOT(p_src_check_exept_files_Slot(bool)));
 
                         qsb_nbre_src_files = new QSpinBox;
-                        qsb_nbre_src_files->setRange(0 , 9999999);
+                        qsb_nbre_src_files->setRange(0, 9999999);
                         qsb_nbre_src_files->setReadOnly(true);
 
                         checkBox_src_layout->addWidget(qcb_src_exeptFolders);
@@ -138,18 +163,18 @@ cMainWindow::cMainWindow(QWidget* parent)
                     {
                         qcb_dst_exeptFolders = new QCheckBox("exept folders");
                         qcb_dst_exeptFolders->setChecked(c_globalVar.b_dst_exept_folders);
-                        connect(qcb_dst_exeptFolders, SIGNAL(clicked(bool)), this , SLOT(p_dst_check_exept_folders_Slot(bool)) );
+                        connect(qcb_dst_exeptFolders, SIGNAL(clicked(bool)), this, SLOT(p_dst_check_exept_folders_Slot(bool)));
 
                         qsb_nbre_dst_folders = new QSpinBox;
-                        qsb_nbre_dst_folders->setRange(0 , 9999999);
+                        qsb_nbre_dst_folders->setRange(0, 9999999);
                         qsb_nbre_dst_folders->setReadOnly(true);
 
                         qcb_dst_exeptFiles = new QCheckBox("exept files");
                         qcb_dst_exeptFiles->setChecked(c_globalVar.b_dst_exept_files);
-                        connect(qcb_dst_exeptFiles, SIGNAL(clicked(bool)), this , SLOT(p_dst_check_exept_files_Slot(bool)) );
+                        connect(qcb_dst_exeptFiles, SIGNAL(clicked(bool)), this, SLOT(p_dst_check_exept_files_Slot(bool)));
 
                         qsb_nbre_dst_files = new QSpinBox;
-                        qsb_nbre_dst_files->setRange(0 , 9999999);
+                        qsb_nbre_dst_files->setRange(0, 9999999);
                         qsb_nbre_dst_files->setReadOnly(true);
 
                         checkBox_dst_layout->addWidget(qcb_dst_exeptFolders);
@@ -197,7 +222,13 @@ cMainWindow::cMainWindow(QWidget* parent)
 
     QWidget* main_widget = new QWidget();
     main_widget->setLayout(main_layout);
-    setCentralWidget(main_widget);
+
+    qs_splitter->addWidget(main_widget);
+
+    // qs_splitter->setSizes({ 99999, 1 });
+    qs_splitter->setSizes({ 1, 99999 });
+
+    setCentralWidget(qs_splitter);
 
     refresh_auto = false;
 
@@ -276,11 +307,11 @@ void cMainWindow::loadSrcList(QString _srcPath)
     if (_srcPath.size() > 0) {
 
         QString _error;
-        qint64 _freeSize = c_globalVar.get_storage_space_free(_srcPath,_error);
+        qint64 _freeSize = c_globalVar.get_storage_space_free(_srcPath, _error);
 
         c_globalVar.s_folderSrc.folder_free_space_size = _freeSize;
 
-        if(_freeSize > (1024 * 1024 * 1024)) // 1 Giga octets
+        if (_freeSize > (1024 * 1024 * 1024)) // 1 Giga octets
         {
             setEnable_Src(false);
 
@@ -289,7 +320,7 @@ void cMainWindow::loadSrcList(QString _srcPath)
 
             cReadFolder* readFolder = new cReadFolder;
             connect(readFolder, &cReadFolder::finished, this, &cMainWindow::p_readSrcFolderFinishSlot);
-            readFolder->setPath(_srcPath , c_globalVar.b_src_exept_folders , c_globalVar.b_src_exept_files);
+            readFolder->setPath(_srcPath, c_globalVar.b_src_exept_folders, c_globalVar.b_src_exept_files);
             readFolder->setFolder(&c_globalVar.s_folderSrc);
             readFolder->start();
 
@@ -298,10 +329,8 @@ void cMainWindow::loadSrcList(QString _srcPath)
             //        _thread->setPath(_srcPath);
             //        _thread->setFolder(&c_globalVar.s_folderSrc);
             //        _thread->p_begin();
-        }
-        else
-        {
-            QMessageBox( QMessageBox::Information, "Error free space size", _error, QMessageBox::Ok).exec();
+        } else {
+            QMessageBox(QMessageBox::Information, "Error free space size", _error, QMessageBox::Ok).exec();
         }
     }
 }
@@ -363,7 +392,6 @@ void cMainWindow::setEnable_Src(bool _stat)
     qsb_nbre_src_files->setEnabled(_stat);
 }
 
-
 void cMainWindow::p_selectPathDstSlot()
 {
     QString _dstPath = QFileDialog::getExistingDirectory(
@@ -380,14 +408,14 @@ void cMainWindow::loadDstList(QString _dstPath)
     if (_dstPath.size() > 0) {
 
         QString _error;
-        qint64 _freeSize = c_globalVar.get_storage_space_free(_dstPath,_error);
+        qint64 _freeSize = c_globalVar.get_storage_space_free(_dstPath, _error);
 
         c_globalVar.s_folderDst.folder_free_space_size = _freeSize;
 
-        if(_freeSize > (1024 * 1024 * 1024)) // 1 Giga octets
+        if (_freeSize > (1024 * 1024 * 1024)) // 1 Giga octets
         {
             QString _error;
-            c_globalVar.get_storage_space_free(_dstPath,_error);
+            c_globalVar.get_storage_space_free(_dstPath, _error);
 
             setEnable_Dst(false);
 
@@ -396,13 +424,11 @@ void cMainWindow::loadDstList(QString _dstPath)
 
             cReadFolder* readFolder = new cReadFolder;
             connect(readFolder, &cReadFolder::finished, this, &cMainWindow::p_readDstFolderFinishSlot);
-            readFolder->setPath(_dstPath, c_globalVar.b_dst_exept_folders , c_globalVar.b_dst_exept_files);
+            readFolder->setPath(_dstPath, c_globalVar.b_dst_exept_folders, c_globalVar.b_dst_exept_files);
             readFolder->setFolder(&c_globalVar.s_folderDst);
             readFolder->start();
-        }
-        else
-        {
-            QMessageBox( QMessageBox::Information, "Error free space size", _error, QMessageBox::Ok).exec();
+        } else {
+            QMessageBox(QMessageBox::Information, "Error free space size", _error, QMessageBox::Ok).exec();
         }
     }
 }
@@ -681,7 +707,7 @@ void cMainWindow::p_src_check_exept_folders_Slot(bool _check)
     qDebug() << "b_src_exept_folders" << c_globalVar.b_src_exept_folders;
 
     QString _srcPath = qle_pathSrc->text();
-    if(_srcPath.size() > 0)
+    if (_srcPath.size() > 0)
         loadSrcList(_srcPath);
 }
 void cMainWindow::p_src_check_exept_files_Slot(bool _check)
@@ -690,7 +716,7 @@ void cMainWindow::p_src_check_exept_files_Slot(bool _check)
     qDebug() << "b_src_exept_files" << c_globalVar.b_src_exept_files;
 
     QString _srcPath = qle_pathSrc->text();
-    if(_srcPath.size() > 0)
+    if (_srcPath.size() > 0)
         loadSrcList(_srcPath);
 }
 void cMainWindow::p_dst_check_exept_folders_Slot(bool _check)
@@ -699,7 +725,7 @@ void cMainWindow::p_dst_check_exept_folders_Slot(bool _check)
     qDebug() << "b_dst_exept_folders" << c_globalVar.b_dst_exept_folders;
 
     QString _dstPath = qle_pathDst->text();
-    if(_dstPath.size() > 0)
+    if (_dstPath.size() > 0)
         loadDstList(_dstPath);
 }
 void cMainWindow::p_dst_check_exept_files_Slot(bool _check)
@@ -708,6 +734,13 @@ void cMainWindow::p_dst_check_exept_files_Slot(bool _check)
     qDebug() << "b_dst_exept_files" << c_globalVar.b_dst_exept_files;
 
     QString _dstPath = qle_pathDst->text();
-    if(_dstPath.size() > 0)
+    if (_dstPath.size() > 0)
         loadDstList(_dstPath);
+}
+
+void cMainWindow::p_saveQstringListSlot()
+{
+    qDebug() << "p_saveQstringListSlot";
+
+    c_globalVar.save_Ini_File();
 }

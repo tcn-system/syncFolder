@@ -1,6 +1,6 @@
 #include "tcnStyle.h"
 
-//#include "Define.h"
+// #include "Define.h"
 
 cTcnStyle* c_tcnStyle;
 
@@ -8,7 +8,7 @@ cTcnStyle::cTcnStyle(QApplication* _app, eProfileChoose _choose_profile)
 {
     app = _app;
 
-    _f_font_size = 12;
+    _f_font_size = 10;
     _f_font_family = "Ubuntu";
 
     _c__white = QColor(255, 255, 255, 255);

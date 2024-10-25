@@ -1,15 +1,17 @@
 #ifndef MAINWINDOW_H_
 #define MAINWINDOW_H_
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QMainWindow>
 #include <QPushButton>
-#include <QVBoxLayout>
-#include <QCheckBox>
 #include <QSpinBox>
+#include <QVBoxLayout>
+
+#include <QSplitter>
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -22,6 +24,7 @@
 
 #include "thread.h"
 
+#include "stringListWdgt.h"
 #include "wdgCompare.h"
 
 #include "waitWindow.h"
@@ -66,8 +69,12 @@ public slots:
     void p_dst_check_exept_folders_Slot(bool _check);
     void p_dst_check_exept_files_Slot(bool _check);
 
+    void p_saveQstringListSlot();
+
 private:
     void closeEvent(QCloseEvent* ce);
+
+    QSplitter* qs_splitter;
 
     QComboBox* qcb_loadProfile;
 
