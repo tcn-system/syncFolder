@@ -10,8 +10,8 @@
 #include "tcnStyle.h"
 
 #ifdef _WIN32
-#include <iostream>
-#include <psapi.h>
+//#include <iostream>
+//#include <psapi.h>
 #include <windows.h>
 
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
