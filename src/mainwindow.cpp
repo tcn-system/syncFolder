@@ -226,7 +226,7 @@ cMainWindow::cMainWindow(QWidget* parent)
     qs_splitter->addWidget(main_widget);
 
     // qs_splitter->setSizes({ 99999, 1 });
-    qs_splitter->setSizes({ 1, 99999 });
+    qs_splitter->setSizes({ 0, 99999 });
 
     setCentralWidget(qs_splitter);
 

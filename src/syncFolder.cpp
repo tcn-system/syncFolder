@@ -47,13 +47,15 @@ void cSyncFolder::readDirPath(QString _path, bool exept)
 {
     QDir dir(_path);
     foreach (QFileInfo item, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
-        if (item.isDir())
-            if (item.absoluteFilePath().size() > dir.path().size())
+        if (item.isDir()) {
+            if (item.absoluteFilePath().size() > dir.path().size()) {
                 if (exept) {
                     if (not verifExeptDir(item.absoluteFilePath()))
                         _readInfo.listDirRead.push_back(item.absoluteFilePath());
                 } else
                     _readInfo.listDirRead.push_back(item.absoluteFilePath());
+            }
+        }
     }
 }
 
@@ -61,12 +63,13 @@ void cSyncFolder::readFilePath(QString _path, bool exept)
 {
     QDir dir(_path);
     foreach (QFileInfo item, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
-        if (item.isFile())
+        if (item.isFile()) {
             if (exept) {
                 if (not verifExeptFileExt(item.absoluteFilePath()))
                     _readInfo.listFileRead.push_back(item.absoluteFilePath());
             } else
                 _readInfo.listFileRead.push_back(item.absoluteFilePath());
+        }
     }
 }
 

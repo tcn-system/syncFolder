@@ -322,6 +322,8 @@ void cMainThread::p_receptFinished(bool b_success)
         case e_action_copy:
             Q_EMIT p_copy_upgate_Signal();
             break;
+        default:
+            break;
         }
 
         Q_EMIT p_copyInProcessSignal();
