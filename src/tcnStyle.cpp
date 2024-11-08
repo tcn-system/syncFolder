@@ -8,8 +8,8 @@ cTcnStyle::cTcnStyle(QApplication* _app, eProfileChoose _choose_profile)
 {
     app = _app;
 
-    _f_font_size = 14;
-    _f_font_family = "Ubuntu";
+    _f_font_size = 10;
+    _f_font_family = "Arial";
 
     _c__white = QColor(255, 255, 255, 255);
     _c__black = QColor(0, 0, 0, 255);
