@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     w.setWindowTitle(cMake_projectName + QString(" ") + cMake_projectVersion + " qt" + cMake_qtVersion + " - tcn-system.com");
     w.setWindowIcon(QIcon(_D_ICON_PATH));
 
-    float resize = 1.0;
+    float resize = 0.80;
 
     QRect size1 = QGuiApplication::primaryScreen()->geometry();
     w.resize(size1.width() * resize, size1.height() * resize);
